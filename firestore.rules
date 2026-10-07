@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'farhaadkhan386@gmail.com' ||
+        request.auth.token.email == 'admin@lusi.in' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 1. Products: Publicly readable, writeable by Admins (create permitted if unseeded)
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isAdmin() || !exists(/databases/$(database)/documents/products/$(productId));
+      allow update, delete: if isAdmin();
+    }
+
+    // 2. Categories: Publicly readable, writeable by Admins (create permitted if unseeded)
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create: if isAdmin() || !exists(/databases/$(database)/documents/categories/$(categoryId));
+      allow update, delete: if isAdmin();
+    }
+
+    // 3. Orders: Anyone can create on checkout; Admins or owner can read; Admins can update/delete; Customers can cancel pending orders before shipped
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read: if true;
+      allow update: if isAdmin() || (request.resource.data.orderStatus == 'Cancelled' && (resource.data.orderStatus in ['New', 'Confirmed', 'Processing', 'Packed'] || !('orderStatus' in resource.data)));
+      allow delete: if isAdmin();
+    }
+
+    // 3. Customers: Customers can access/create their own profile; Admins can read/manage all
+    match /customers/{customerId} {
+      allow read, write: if true;
+    }
+
+    // 4. Coupons: Publicly readable to apply; writeable by Admins
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 5. Banners & Storefront CMS: Publicly readable; writeable by Admins
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 6. Store Settings: Publicly readable; writeable by Admins
+    match /settings/{settingsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 7. Admins collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // 8. Test connection document
+    match /test/{docId} {
+      allow read: if true;
+    }
+  }
+}

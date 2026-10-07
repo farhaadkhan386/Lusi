@@ -1,0 +1,174 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Apparel garment catalog item for Men, Women, or Kids",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "sku": { "type": "string" },
+        "category": { "type": "string", "enum": ["Men", "Women", "Kids"] },
+        "subcategory": { "type": "string" },
+        "genderTag": { "type": "string" },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "discountPercentage": { "type": "number" },
+        "stockQuantity": { "type": "number" },
+        "lowStockThreshold": { "type": "number" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "colors": { "type": "array" },
+        "sizes": { "type": "array" },
+        "images": { "type": "array" },
+        "description": { "type": "string" },
+        "fabric": { "type": "string" },
+        "fit": { "type": "string" },
+        "care": { "type": "string" },
+        "inStock": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["Active", "Draft", "Out of Stock", "Archived"] },
+        "isNewArrival": { "type": "boolean" },
+        "isBestSeller": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" }
+      },
+      "required": ["id", "name", "price", "category", "subcategory", "stockQuantity", "status"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase transaction record with fulfillment status",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "items": { "type": "array" },
+        "address": { "type": "object" },
+        "subtotal": { "type": "number" },
+        "shipping": { "type": "number" },
+        "discount": { "type": "number" },
+        "total": { "type": "number" },
+        "date": { "type": "string" },
+        "estimatedDelivery": { "type": "string" },
+        "rewardsEarned": { "type": "number" },
+        "orderStatus": { "type": "string" },
+        "paymentStatus": { "type": "string" }
+      },
+      "required": ["orderId", "items", "address", "total"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Shopper account record with order history and rewards",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "city": { "type": "string" },
+        "ordersCount": { "type": "number" },
+        "totalSpent": { "type": "number" },
+        "lastOrderDate": { "type": "string" },
+        "status": { "type": "string" },
+        "rewardPoints": { "type": "number" }
+      },
+      "required": ["id", "email", "name"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Discount promo voucher code",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "discountType": { "type": "string" },
+        "discountValue": { "type": "number" },
+        "minOrderValue": { "type": "number" },
+        "usageLimit": { "type": "number" },
+        "usedCount": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["code", "discountType", "discountValue"]
+    },
+    "Banner": {
+      "title": "Banner",
+      "description": "Storefront editorial campaign banner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "heading": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string" },
+        "image": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["heading", "image"]
+    },
+    "StoreSettings": {
+      "title": "StoreSettings",
+      "description": "Global storefront policies, notices, and shipping limits",
+      "type": "object",
+      "properties": {
+        "brandName": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "freeShippingThreshold": { "type": "number" },
+        "shippingCharge": { "type": "number" },
+        "noticeBarText": { "type": "string" },
+        "secondaryNoticeText": { "type": "string" }
+      },
+      "required": ["brandName", "contactEmail"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Apparel department taxonomy, editorial banners, and subcategories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string", "enum": ["Men", "Women", "Kids"] },
+        "title": { "type": "string" },
+        "subheading": { "type": "string" },
+        "description": { "type": "string" },
+        "buttonText": { "type": "string" },
+        "image": { "type": "string" },
+        "bannerImage": { "type": "string" },
+        "subcategories": { "type": "array" },
+        "displayOrder": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "category", "title", "image", "subcategories"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Public clothing catalog readable by customers, editable by admins"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Department categories, banners, and subcategories taxonomy readable by customers, editable by admins"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders created upon checkout and managed by admins"
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Customer profiles and loyalty points"
+    },
+    "/coupons/{couponId}": {
+      "schema": "Coupon",
+      "description": "Promotional privileges readable by customers, manageable by admins"
+    },
+    "/banners/{bannerId}": {
+      "schema": "Banner",
+      "description": "Homepage and promotional editorial banners"
+    },
+    "/settings/{settingsId}": {
+      "schema": "StoreSettings",
+      "description": "Store settings and shipping rules"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "Customer" },
+      "description": "Designated administrator identity tokens"
+    }
+  }
+}
