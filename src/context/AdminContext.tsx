@@ -369,7 +369,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Auth Methods
   const login = async (email: string, pass: string): Promise<{ success: boolean; message: string }> => {
     const cleanEmail = email.trim().toLowerCase();
-    if (cleanEmail === 'admin@lusi.in' && pass === 'LusiAtelier2026') {
+    if (cleanEmail === 'admin@lusi.in' && pass === 'Raza@999') {
       const user = { email: cleanEmail, name: 'LUSI Head Administrator', role: 'Super Admin' };
       setIsAuthenticated(true);
       setAdminUser(user);
