@@ -338,7 +338,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenFAQs }) =
               className="text-[#C9A354] hover:text-white transition-colors font-mono font-medium flex items-center gap-1"
               title="Access Authorized Admin Panel"
             >
-              <span>Admin Access (/admin)</span>
             </button>
           </div>
         </div>
