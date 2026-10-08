@@ -19,7 +19,7 @@ interface AdminLoginProps {
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToStore }) => {
   const { login, loginWithGoogle } = useAdmin();
   const [email, setEmail] = useState('admin@lusi.in');
-  const [password, setPassword] = useState('LusiAtelier2026');
+  const [password, setPassword] = useState('Raza@999');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
